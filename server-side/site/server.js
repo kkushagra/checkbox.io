@@ -7,8 +7,12 @@ var express = require('express'),
 	create = require('./routes/create.js'),
 	study = require('./routes/study.js'),
 	admin = require('./routes/admin.js');
+var redis = require('redis');
 
 var app = express();
+
+// REDIS
+var client = redis.createClient(6379, '127.0.0.1', {})
 
 app.configure(function () {
     app.use(express.logger('dev'));     /* 'default', 'short', 'tiny', 'dev' */
@@ -82,7 +86,30 @@ app.post('/api/study/admin/notify/', admin.notifyParticipant);
 //app.post('/api/design/survey/vote/cast', votes.castVote );
 //app.get('/api/design/survey/vote/status', votes.status );
 //app.get('/api/design/survey/vote/stat/:id', votes.getSurveyStats );
+app.get('/api/toggleFeature', function(req, res) {
+	{	
+		app.get("toggleFeature", function(err, value){
 
+			res.writeHead(200, {'content-type':'text/html'});   				
+			if(value == null) {
+				app.set("toggleFeature", "set");		
+				res.write("<h3> toggleFeature: set </h3>");
+			}
+			else if( value == "set" ) {
+				app.set("toggleFeature", "unset");
+				res.write("<h3> toggleFeature: unset </h3>");		
+			
+			}
+			else if( value == "unset" ) {
+				app.set("toggleFeature", "set");
+				res.write("<h3> toggleFeature: set </h3>");		
+			}
+
+			res.end();
+		});
+
+	}
+})
 
 
 app.listen(process.env.MONGO_PORT);

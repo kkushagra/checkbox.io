@@ -2,12 +2,13 @@ var mongo = require('mongodb');
 var check = require('validator').check;
 var _ = require('underscore');
 var fileService = require('./upload.js');
+var redis = require('redis');
 
 var Server = mongo.Server,
     Db = mongo.Db,
     ObjectID = mongo.ObjectID;
  
-
+var client = redis.createClient(6379, '127.0.0.1', {})
 var MongoClient = mongo.MongoClient;
 var db = null;
 MongoClient.connect("mongodb://"+process.env.MONGO_USER+":"+process.env.MONGO_PASSWORD+"@"+process.env.MONGO_IP+":27017/site?authSource=admin", function(err, authdb) {
@@ -88,8 +89,19 @@ exports.listing = function(req, res)
 
                             return aPriority - bPriority;
                         });
+                        client.get("toggleFeature", function(err, value){
+                        if(value == "set") {
+                                res.send(result);
+                        }
+                        else {
 
-                        res.send(result);
+                                res.writeHead(200, {'content-type':'text/html'});
+                                res.write("<h3> Disabled  </h3>");
+                                res.end();
+                        }
+                        });
+
+                        // res.send(result);
                     });
                 }
             );
