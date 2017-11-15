@@ -88,20 +88,20 @@ app.post('/api/study/admin/notify/', admin.notifyParticipant);
 //app.get('/api/design/survey/vote/stat/:id', votes.getSurveyStats );
 app.get('/api/toggleFeature', function(req, res) {
 	{	
-		app.get("toggleFeature", function(err, value){
+		client.get("toggleFeature", function(err, value){
 
 			res.writeHead(200, {'content-type':'text/html'});   				
 			if(value == null) {
-				app.set("toggleFeature", "set");		
+				client.set("toggleFeature", "set");		
 				res.write("<h3> toggleFeature: set </h3>");
 			}
 			else if( value == "set" ) {
-				app.set("toggleFeature", "unset");
+				client.set("toggleFeature", "unset");
 				res.write("<h3> toggleFeature: unset </h3>");		
 			
 			}
 			else if( value == "unset" ) {
-				app.set("toggleFeature", "set");
+				client.set("toggleFeature", "set");
 				res.write("<h3> toggleFeature: set </h3>");		
 			}
 
